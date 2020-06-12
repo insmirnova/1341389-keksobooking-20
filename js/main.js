@@ -1,70 +1,79 @@
 'use strict';
 
-var avatars = ['01', '02', '03', '04', '05', '06', '07', '08'];
-var titles = ['Заголовок1', 'Заголовок2', 'Заголовок3',
-'Заголовок4', 'Заголовок5','Заголовок6', 'Заголовок7', 'Заголовок8'];
+
 var types = [palace, flat, house, bungalo];
-const price_min = 10000;
-const price_max = 80000;
+var min_value = 10000;
+var max_value = 80000;
 var rooms = [1, 2, 3, 4];
 var guests = [1, 2, 3, 4, 5];
-var checkin = ['12:00', '13:00', '14:00'];
-var checkout = ['12:00', '13:00', '14:00'];
-var features = ['wi-fi', 'dishwasher', 'parking', 'washer', 'elevator', 'conditioner'];
-var descriptions = ['Описание1', 'Описание2', 'Описание3',
-'Описание4', 'Описание5', 'Описание6', 'Описание7', 'Описание8'];
-var photos = ['http://o0.github.io/assets/images/tokyo/hotel1.jpg',
+var time_checkin = ['12:00', '13:00', '14:00'];
+var time_checkout = ['12:00', '13:00', '14:00'];
+
+var features = [
+  'wi-fi',
+  'dishwasher',
+  'parking',
+  'washer',
+  'elevator',
+  'conditioner',
+];
+
+var photos = [
+'http://o0.github.io/assets/images/tokyo/hotel1.jpg',
 'http://o0.github.io/assets/images/tokyo/hotel2.jpg',
-'http://o0.github.io/assets/images/tokyo/hotel3.jpg'];
-var OFFSET_X = 25;
-var OFFSET_Y = 70;
+'http://o0.github.io/assets/images/tokyo/hotel3.jpg',
+];
 
-// Получаем элементы с классом map__pin. Используем селектор.
-var pins = document.querySelectorAll('.map__pin');
+var max_y = 630;
+var min_y = 130;
 
-// Получаем элемент с идентификатором "housing-price". Используем селектор.
-var housePriceField = document.querySelector('#housing-price');
+var pin_width = 50;
+var pin_height = 70;
 
-// Добавляем элементу housePriceField класс hidden
-housePriceField.classList.add('hidden');
+var pinTemplate = document.querySelector('#pin')
+  .content
+  .querySelector('.map__pin');
+var mapPins = document.querySelector('.map__pins');
+var mapWidth = document.querySelector('.map__pins').offsetWidth;
+var pinFragment = document.createDocumentFragment();
 
-// Удаляем класс hidden у элемента housePriceField
-housePriceField.classList.remove('hidden');
+
 
 // функция рандомного числа
 
-function getRandomInt(max) {
+function getRandomNumber(max) {
   return Math.floor(Math.random() * Math.floor(max));
 }
 
-console.log(getRandomInt(1)); // expected output: 0
-
+//console.log(getRandomNumber(1)); // expected output: 0
 
 // рандомный элемент массива
 var getRandomElement = function (array) {
-  return array[getRandomInt(0, array.length)];
+  return array[getRandomNumber(0, array.length)];
 };
 
 // генерирование объектов
 
-var generatePinObjects = function () {
-  for (var i = 0; i < 8; i++) {
-    generatedPins.push({
+var generateData = function (i) {
+  var locationY = getRandomNumb(min_y, max_y);
+  var locationX = getRandomNumb(0, mapWidth);
+
+  var ads = {
       author: {
-        avatar: 'img/avatars/user' + avatars[i] + '.png',
+        avatar: 'img/avatars/user0' + (i + 1) + '.png',
       },
       offer: {
-        title: titles[i],
+        title: 'Заголовок' + (i + 1),
         address: locationX + ', ' + locationY,
-        price: getRandomInt(price_min, price_max),
-        type: types[i],
-        rooms: getRandomInt(1, 4),
-        guests: getRandomInt(1, 5),
-        checkin: time[i],
-        checkout: time[i],
-        features: getRandomArray(features),
-        description: descriptions[i],
-            photos: getRandomArray(photos) /
+        price: getRandomNumber(min_value, max_value),
+        type: types[getRandomElement(types.length)],
+        rooms: getRandomNumber(1, 4),
+        guests: getRandomNumber(1, 5),
+        checkin: time_checkin[getRandomElement(time_checkin.length)],
+        checkout: time_checkout[getRandomElement(time_checkout.length)],
+        features: features[getRandomElement(features.length)],
+        description: 'Описание' + (i + 1),
+        photos: photos[getRandomElement(photos.length)],
           },
           location: {
             x: locationX,
@@ -73,7 +82,7 @@ var generatePinObjects = function () {
         }
     );
   }
-return generatePinObjects;
+  //return ads;
 };
 
 
@@ -84,21 +93,22 @@ map.classList.remove('map--faded');
 
 
 // рендерим на страницу метки
-var renderPins = function () {
-  var fragment = document.createDocumentFragment();
+var renderPin = function (data) {
+  var pinElement = pinTemplate.cloneNode(true);
 
-  for (var j = 0; j < generatedPins.length; j++) {
-    var pinElement = pin.cloneNode(true);
-    var currentPin = generatedPins[j];
-    var pinImage = pinElement.querySelector('img');
+  pinElement.querySelector('img').src = data.author.avatar;
+  pinElement.querySelector('img').alt = data.offer.title;
+  pinElement.style.left = data.location.x - pin_width / 2 + 'px';
+  pinElement.style.top = data.location.y - pin_height + 'px';
 
-    pinElement.style.top = currentPin.location.y + 'px';
-    pinElement.style.left = currentPin.location.x + 'px';
-    pinImage.alt = currentPin.offer.title + ' 0' + j;
-    pinImage.src = currentPin.author.avatar;
-
-    fragment.appendChild(pinElement);
-  }
-  mapPins.appendChild(fragment);
+  return pinElement;
 };
-renderPins();
+
+var generateObject = function () {
+  for (var i = 0; i < arrObject.length; i++) {
+    pinFragment.appendChild(renderPin(arrObject[i]));
+  }
+};
+generateObject();
+
+mapPins.appendChild(pinFragment);
