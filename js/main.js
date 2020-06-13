@@ -46,6 +46,7 @@ function getRandomNumber(max) {
 
 //console.log(getRandomNumber(1)); // expected output: 0
 
+
 // рандомный элемент массива
 var getRandomElement = function (array) {
   return array[getRandomNumber(0, array.length)];
