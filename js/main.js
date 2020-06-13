@@ -38,7 +38,6 @@ var mapWidth = document.querySelector('.map__pins').offsetWidth;
 var pinFragment = document.createDocumentFragment();
 
 
-
 // функция рандомного числа
 
 function getRandomNumber(max) {
