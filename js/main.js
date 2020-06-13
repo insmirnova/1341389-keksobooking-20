@@ -80,10 +80,8 @@ var generateData = function (i) {
             y: locationY
           }
         }
-    );
   }
   //return ads;
-};
 
 
 // отключаем неактивное состояние у страницы
